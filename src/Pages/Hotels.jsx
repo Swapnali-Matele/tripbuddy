@@ -1,46 +1,41 @@
 import { useState, useEffect } from 'react'
-import { getHotelsByCountry } from '../services/hotelsApi'
+import { useDispatch, useSelector } from 'react-redux'
+import { clearHotels, fetchHotelsByCountry, selectHotels, selectHotelsError, selectHotelsLoading } from '../redux/slices/hotelsSlice'
 import countryCodes from '../utils/countryCodes'
 import Pagination from '../Components/Pagination'
 import HotelCard from '../Components/HotelCard'
 
 const PAGE_SIZE = 10
-const MAX_RESULTS = 50
 
 const Hotels = () => {
+  const dispatch = useDispatch()
   const [country, setCountry] = useState('')
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState(null)
-  const [hotels, setHotels] = useState([])
   const [page, setPage] = useState(1)
+
+  const hotels = useSelector(selectHotels)
+  const loading = useSelector(selectHotelsLoading)
+  const error = useSelector(selectHotelsError)
 
   useEffect(() => {
     setPage(1)
   }, [country])
 
   useEffect(() => {
-    if (!country) return
-    const fetch = async () => {
-      setLoading(true)
-      setError(null)
-      setHotels([])
-      const res = await getHotelsByCountry(country)
-      setLoading(false)
-      if (!res.success) {
-        setError('Unable to load hotels.')
-        return
-      }
-      const list = Array.isArray(res.hotels) ? res.hotels.slice(0, MAX_RESULTS) : []
-      setHotels(list)
+    if (!country) {
+      dispatch(clearHotels())
+      return
     }
-    fetch()
-  }, [country])
+
+    dispatch(fetchHotelsByCountry(country))
+  }, [country, dispatch])
 
   const totalPages = Math.max(1, Math.ceil(hotels.length / PAGE_SIZE))
   const currentSlice = hotels.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE)
 
   const handleRetry = () => {
-    setCountry((c) => { return c })
+    if (country) {
+      dispatch(fetchHotelsByCountry(country))
+    }
   }
 
   return (

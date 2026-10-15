@@ -8,7 +8,7 @@ import { selectFavoriteCount } from '../../redux/slices/favoritesSlice'
 
 const Navbar = () => {
   const [showMenu, setShowMenu] = useState(false)
-  const toggleMenu = () => setShowMenu(!showMenu)
+  const toggleMenu = () => setShowMenu((prev) => !prev)
   const favCount = useSelector(selectFavoriteCount)
 
   return (
@@ -19,8 +19,8 @@ const Navbar = () => {
             <h1 className='text-2xl font-bold text-white'>Trip<span className='text-red-500'>Buddy</span></h1>
           </Link>
 
-          <nav className='hidden md:flex items-center gap-6 lg:gap-8'>
-            <ul className='flex items-center gap-6 lg:gap-8 text-sm font-semibold text-white/90'>
+          <nav className='hidden lg:flex items-center gap-6 xl:gap-8'>
+            <ul className='flex items-center gap-6 xl:gap-8 text-sm font-semibold text-white/90'>
               <Link to='/' className='hover:text-red-400 transition-colors'>Home</Link>
               <Link to='/hotels' className='hover:text-red-400 transition-colors'>Hotels</Link>
               <Link to='/blogs' className='hover:text-red-400 transition-colors'>Blogs</Link>
@@ -34,9 +34,12 @@ const Navbar = () => {
           </nav>
 
           <button
-            aria-label='Open menu'
+            type='button'
+            aria-label={showMenu ? 'Close menu' : 'Open menu'}
+            aria-expanded={showMenu}
+            aria-controls='responsive-menu'
             onClick={toggleMenu}
-            className='md:hidden text-white focus:outline-none focus:ring-2 focus:ring-red-300 rounded'
+            className='lg:hidden text-white focus:outline-none focus:ring-2 focus:ring-red-300 rounded'
           >
             <HiMenuAlt1 className='cursor-pointer' size={30} />
           </button>
@@ -45,7 +48,7 @@ const Navbar = () => {
         <ResponsiveMenu showMenu={showMenu} setShowMenu={setShowMenu} />
       </div>
 
-      <div aria-hidden='true' className='h-16 md:h-20' />
+      <div aria-hidden='true' className='h-16 lg:h-20' />
     </header>
   )
 }

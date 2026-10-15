@@ -1,23 +1,19 @@
 import axios from 'axios'
 
-const BASE_URL = import.meta.env.VITE_LITE_API_URL || 'https://api.liteapi.travel/v3.0'
-const API_KEY = import.meta.env.VITE_LITE_API_KEY || ''
+const BASE_URL = '/api'
 
 const client = axios.create({
   baseURL: BASE_URL,
   headers: {
     'Content-Type': 'application/json',
-    ...(API_KEY ? { 'X-API-Key': API_KEY } : {}),
   },
 })
 
 export async function getHotelsByCountry(countryCode) {
   if (!countryCode) throw new Error('countryCode is required')
   try {
-    const res = await client.get('/data/hotels', { params: { countryCode } })
-    // Expect the hotels array to be in res.data or similar; return normalized structure
+    const res = await client.get('/hotels', { params: { countryCode } })
     const data = res.data
-    // Try common shapes
     const hotels = Array.isArray(data) ? data : Array.isArray(data?.data) ? data.data : data?.hotels ?? []
     return { success: true, hotels }
   } catch (err) {
@@ -76,9 +72,8 @@ function normalizeHotel(raw) {
 export async function getHotelById(hotelId) {
   if (!hotelId) return { success: false, error: new Error('hotelId is required') }
   try {
-    const res = await client.get('/data/hotel', { params: { hotelId } })
+    const res = await client.get('/hotel', { params: { hotelId } })
     const data = res.data
-    // response may be nested
     const raw = data?.data ?? data?.hotel ?? data ?? {}
     const hotel = normalizeHotel(raw)
     return { success: true, hotel }

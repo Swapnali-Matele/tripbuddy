@@ -5,10 +5,20 @@ import footer from '../assets/footer-pattern.jpg'
 const Footer = () => {
   const [email, setEmail] = useState('')
   const [subscribed, setSubscribed] = useState(false)
+  const [error, setError] = useState('')
 
   const handleSubmit = (e) => {
     e.preventDefault()
-    if (!email.trim()) return
+    const trimmedEmail = email.trim()
+    const isValidEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmedEmail)
+
+    if (!trimmedEmail || !isValidEmail) {
+      setError('Please enter a valid email address.')
+      setSubscribed(false)
+      return
+    }
+
+    setError('')
     setSubscribed(true)
     setEmail('')
   }
@@ -46,12 +56,22 @@ const Footer = () => {
               <input
                 type='email'
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={(e) => {
+                  setEmail(e.target.value)
+                  if (error) setError('')
+                }}
                 placeholder='Email address'
+                aria-invalid={Boolean(error)}
+                aria-describedby={error ? 'newsletter-error' : undefined}
                 className='w-full px-3 py-2 rounded-md border border-white/20 bg-white/10 text-white placeholder:text-slate-300 focus:outline-none focus:ring-2 focus:ring-red-300'
               />
               <button type='submit' className='w-full px-3 py-2 rounded-md bg-red-500 text-white font-semibold hover:bg-red-600 transition-colors'>Subscribe</button>
-              {subscribed && <p className='text-xs text-green-300'>Thanks for subscribing.</p>}
+              {error && (
+                <p id='newsletter-error' role='alert' aria-live='polite' className='text-xs text-red-300'>
+                  {error}
+                </p>
+              )}
+              {subscribed && <p id='newsletter-success' aria-live='polite' className='text-xs text-green-300'>Thanks for subscribing.</p>}
             </form>
           </div>
 

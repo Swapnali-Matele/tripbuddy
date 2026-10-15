@@ -8,24 +8,24 @@ const ResponsiveMenu = ({ showMenu, setShowMenu }) => {
   const favCount = useSelector(selectFavoriteCount)
 
   return (
-    <div className={`${showMenu ? 'right-0' : '-right-full'} fixed inset-y-0 right-0 z-50 w-3/4 max-w-xs flex flex-col justify-between bg-white px-6 pb-6 pt-16 text-black transition-all duration-200 md:hidden rounded-l-xl shadow-md`}>
-      <div>
-        <button aria-label='Close menu' className='border border-black rounded-lg absolute top-4 right-6 p-1 focus:outline-none focus:ring-2 focus:ring-red-300' onClick={() => setShowMenu(false)}>
-          <X />
-        </button>
-
-        <nav className='mt-4'>
-          <ul className='space-y-4 text-lg text-black flex flex-col'>
-            <Link to='/' onClick={() => setShowMenu(false)}><li>Home</li></Link>
-            <Link to='/hotels' onClick={() => setShowMenu(false)}><li>Hotels</li></Link>
-            <Link to='/blogs' onClick={() => setShowMenu(false)}><li>Blogs</li></Link>
-            <Link to='/favorites' onClick={() => setShowMenu(false)}><li className='flex items-center gap-2'><FaHeart className='text-red-500' /> Favorites <span className='text-red-500 font-semibold'>({favCount})</span></li></Link>
-            <Link to='/about' onClick={() => setShowMenu(false)}><li>About</li></Link>
-          </ul>
-        </nav>
-      </div>
-
-      <div className='text-sm text-slate-500'>TripBuddy</div>
+    <div
+      id='responsive-menu'
+      className={`${showMenu ? 'block' : 'hidden'} lg:hidden border-t border-white/10 bg-slate-900/95 backdrop-blur-sm`}
+      aria-label='Mobile menu'
+    >
+      <nav className='max-w-7xl mx-auto px-4 sm:px-6 py-3'>
+        <ul className='flex flex-col space-y-3 text-sm font-semibold text-white/90'>
+          <Link to='/' onClick={() => setShowMenu(false)} className='hover:text-red-400 transition-colors'>Home</Link>
+          <Link to='/hotels' onClick={() => setShowMenu(false)} className='hover:text-red-400 transition-colors'>Hotels</Link>
+          <Link to='/blogs' onClick={() => setShowMenu(false)} className='hover:text-red-400 transition-colors'>Blogs</Link>
+          <Link to='/favorites' onClick={() => setShowMenu(false)} className='flex items-center gap-2 hover:text-red-400 transition-colors'>
+            <FaHeart className='text-red-500' />
+            <span>Favorites</span>
+            <span className='inline-flex items-center justify-center min-w-6 h-6 rounded-full bg-red-500 px-1.5 text-xs font-bold text-white'>{favCount}</span>
+          </Link>
+          <Link to='/about' onClick={() => setShowMenu(false)} className='hover:text-red-400 transition-colors'>About</Link>
+        </ul>
+      </nav>
     </div>
   )
 }

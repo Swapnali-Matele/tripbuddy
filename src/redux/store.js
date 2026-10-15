@@ -1,9 +1,11 @@
 import { createStore, applyMiddleware, combineReducers } from 'redux'
 import { thunk } from 'redux-thunk'
 import favoritesReducer from './slices/favoritesSlice'
+import hotelsReducer from './slices/hotelsSlice'
 
 const rootReducer = combineReducers({
   favorites: favoritesReducer,
+  hotels: hotelsReducer,
 })
 
 const STORAGE_KEY = 'tripbuddy_favorites'

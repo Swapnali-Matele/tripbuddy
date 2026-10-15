@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import PropTypes from 'prop-types'
 import { Link } from 'react-router-dom'
 import { FaLightbulb, FaRegClock, FaGlobeAmericas, FaHeart } from 'react-icons/fa'
@@ -45,6 +46,27 @@ PersonCard.propTypes = {
 }
 
 const About = () => {
+  const [openFaq, setOpenFaq] = useState(0)
+
+  const faqItems = [
+    {
+      question: 'What is TripBuddy?',
+      answer: 'TripBuddy helps travelers discover hotel options, browse travel stories, and keep track of places they want to revisit later.'
+    },
+    {
+      question: 'How do I explore hotels?',
+      answer: 'Use the Hotels page to choose a country and browse the available listings, then open any hotel card for more details.'
+    },
+    {
+      question: 'How do I save my favorite stays?',
+      answer: 'Tap the Favorite button on a hotel card or hotel detail page to save it. Your favorites stay available in the Favorites page and are stored locally in the browser.'
+    },
+    {
+      question: 'Where can I find travel inspiration?',
+      answer: 'Visit the Blog pages to browse travel stories, tips, and destination inspiration for your next trip.'
+    }
+  ]
+
   const team = [
     {
       img: IndiaImg,
@@ -171,6 +193,39 @@ const About = () => {
             <div className="text-2xl font-bold text-slate-900">24/7</div>
             <div className="text-sm text-slate-600">Travel Support</div>
           </div>
+        </div>
+      </section>
+
+      <section>
+        <h2 className="text-2xl font-semibold mb-6 text-slate-900">Frequently asked questions</h2>
+        <div className="space-y-3">
+          {faqItems.map((item, index) => {
+            const isOpen = openFaq === index
+            const panelId = `faq-panel-${index}`
+            const buttonId = `faq-button-${index}`
+
+            return (
+              <div key={item.question} className="border border-slate-200 rounded-lg bg-white shadow-sm overflow-hidden">
+                <button
+                  id={buttonId}
+                  type="button"
+                  className="w-full flex items-center justify-between gap-4 px-5 py-4 text-left font-semibold text-slate-900 focus:outline-none focus:ring-2 focus:ring-red-300"
+                  aria-expanded={isOpen}
+                  aria-controls={panelId}
+                  onClick={() => setOpenFaq(isOpen ? -1 : index)}
+                >
+                  <span>{item.question}</span>
+                  <span className="text-xl text-red-500">{isOpen ? '−' : '+'}</span>
+                </button>
+
+                {isOpen && (
+                  <div id={panelId} role="region" aria-labelledby={buttonId} className="px-5 pb-4 text-sm text-slate-700">
+                    {item.answer}
+                  </div>
+                )}
+              </div>
+            )
+          })}
         </div>
       </section>
 
