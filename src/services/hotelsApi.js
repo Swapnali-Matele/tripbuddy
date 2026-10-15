@@ -1,9 +1,6 @@
 import axios from 'axios'
 
-const BASE_URL = '/api'
-
 const client = axios.create({
-  baseURL: BASE_URL,
   headers: {
     'Content-Type': 'application/json',
   },
@@ -12,7 +9,7 @@ const client = axios.create({
 export async function getHotelsByCountry(countryCode) {
   if (!countryCode) throw new Error('countryCode is required')
   try {
-    const res = await client.get('/hotels', { params: { countryCode } })
+    const res = await client.get(`/api/hotels?countryCode=${encodeURIComponent(countryCode)}`)
     const data = res.data
     const hotels = Array.isArray(data) ? data : Array.isArray(data?.data) ? data.data : data?.hotels ?? []
     return { success: true, hotels }
@@ -72,7 +69,7 @@ function normalizeHotel(raw) {
 export async function getHotelById(hotelId) {
   if (!hotelId) return { success: false, error: new Error('hotelId is required') }
   try {
-    const res = await client.get('/hotel', { params: { hotelId } })
+    const res = await client.get(`/api/hotel?hotelId=${encodeURIComponent(hotelId)}`)
     const data = res.data
     const raw = data?.data ?? data?.hotel ?? data ?? {}
     const hotel = normalizeHotel(raw)

@@ -1,4 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
+import axios from 'axios'
 import hotelsReducer, {
   fetchHotelsByCountry,
   fetchHotelsStart,
@@ -7,10 +8,32 @@ import hotelsReducer, {
   clearHotels,
 } from './hotelsSlice'
 import * as hotelsApi from '../../services/hotelsApi'
+import { getHotelById, getHotelsByCountry as getHotelsByCountryApi } from '../../services/hotelsApi'
+
+const mockAxiosGet = vi.hoisted(() => vi.fn())
+
+vi.mock('axios', () => ({
+  default: {
+    create: vi.fn(() => ({ get: mockAxiosGet })),
+    get: mockAxiosGet,
+  },
+}))
 
 describe('hotelsReducer and fetchHotelsByCountry', () => {
   beforeEach(() => {
     vi.restoreAllMocks()
+    vi.clearAllMocks()
+  })
+
+  it('requests the app proxy for hotel listings and hotel details', async () => {
+    axios.get.mockResolvedValueOnce({ data: { data: [{ id: 'hotel-1' }] } })
+    axios.get.mockResolvedValueOnce({ data: { data: { id: 'lp33e2a', name: 'Test Hotel' } } })
+
+    await getHotelsByCountryApi('IN')
+    await getHotelById('lp33e2a')
+
+    expect(axios.get).toHaveBeenNthCalledWith(1, '/api/hotels?countryCode=IN')
+    expect(axios.get).toHaveBeenNthCalledWith(2, '/api/hotel?hotelId=lp33e2a')
   })
 
   it('fetches hotels successfully and stores fulfilled state', async () => {
